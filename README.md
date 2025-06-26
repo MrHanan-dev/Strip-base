@@ -201,7 +201,6 @@ $$ LANGUAGE plpgsql;
 
 Feel free to reach out if you have any questions or need help:
 
-- **GitHub:** https://github.com/mustafacagri
-- **Linkedin:** [@MustafaCagri](https://www.linkedin.com/in/mustafacagri/)
+
 
 Made with ❤️ in 📍 Istanbul, using React.js 18 ⚛️ Next.js 14 🌐 Stripe 💳 TailwindCSS 🎨 TypeScript 🔧 React Query / Tanstack 🔄 and Lodash 🛠️!
