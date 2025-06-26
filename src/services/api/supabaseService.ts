@@ -18,10 +18,8 @@ export const useSupabaseService = () => {
       const selectQuery =
         'id, name, slug, price_monthly, price_yearly, description, cta, most_popular, is_featured, pricing_features(id,name)'
 
-      // Build the query
       let query = supabase.from('pricing_plans').select(selectQuery)
 
-      // Apply filter for isFeatured only if it's defined
       if (typeof is_featured === 'boolean') {
         query = query.eq('is_featured', is_featured)
       }
@@ -43,11 +41,7 @@ export const useSupabaseService = () => {
       error: userError,
     } = await supabase.auth.getUser()
 
-    if (userError) {
-      return null
-    }
-
-    if (!user) {
+    if (userError || !user) {
       return null
     }
 
@@ -59,14 +53,11 @@ export const useSupabaseService = () => {
       .eq('id', user.id)
       .single()
 
-    if (error) {
+    if (error || !data) {
       console.error(error)
       return null
     }
 
-    if (!data) return null
-
-    // Explicitly cast and transform pricing_plans to match PricingPlan[]
     const profile: Profile = {
       id: data.id,
       name: data.name,
@@ -78,13 +69,13 @@ export const useSupabaseService = () => {
       plan_id: data.plan_id,
       stripe_customer_id: data.stripe_customer_id,
       pricing_plans: Array.isArray(data.pricing_plans)
-        ? data.pricing_plans.map((plan: PricingPlan) => ({
+        ? (data.pricing_plans.map((plan) => ({
             id: plan.id,
             name: plan.name,
             slug: plan.slug,
             price_monthly: plan.price_monthly,
             price_yearly: plan.price_yearly,
-          }))
+          })) as PricingPlan[])
         : [],
     }
 
@@ -129,7 +120,6 @@ export const useSupabaseService = () => {
   return {
     fetchPricingPlans,
     fetchUserProfile,
-
     loginWithGithub,
     loginWithLinkedIn,
     logout,
