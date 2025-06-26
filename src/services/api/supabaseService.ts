@@ -30,9 +30,8 @@ export const useSupabaseService = () => {
 
       if (error) throw error
 
-      return data
+      return data ?? []
     } catch (error: unknown) {
-      // Specify error as unknown here
       handlerApiError(error)
       return []
     }
@@ -49,7 +48,7 @@ export const useSupabaseService = () => {
     }
 
     if (!user) {
-      return null // Return null if there is no user.
+      return null
     }
 
     const { data, error } = await supabase
@@ -62,10 +61,34 @@ export const useSupabaseService = () => {
 
     if (error) {
       console.error(error)
-      return null // Return null on error.
+      return null
     }
 
-    return Array.isArray(data) && data.length > 0 ? data[0] : data ?? {} // Return the user profile data or null if undefined.
+    if (!data) return null
+
+    // Explicitly cast and transform pricing_plans to match PricingPlan[]
+    const profile: Profile = {
+      id: data.id,
+      name: data.name,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      picture: data.picture,
+      is_subscribed: data.is_subscribed,
+      plan_id: data.plan_id,
+      stripe_customer_id: data.stripe_customer_id,
+      pricing_plans: Array.isArray(data.pricing_plans)
+        ? data.pricing_plans.map((plan: any) => ({
+            id: plan.id,
+            name: plan.name,
+            slug: plan.slug,
+            price_monthly: plan.price_monthly,
+            price_yearly: plan.price_yearly,
+          }))
+        : [],
+    }
+
+    return profile
   }
 
   const loginWithLinkedIn = async () => {
@@ -77,7 +100,6 @@ export const useSupabaseService = () => {
         },
       })
     } catch (error: unknown) {
-      // Specify error as unknown here
       handlerApiError(error)
     }
   }
@@ -91,7 +113,6 @@ export const useSupabaseService = () => {
         },
       })
     } catch (error: unknown) {
-      // Specify error as unknown here
       handlerApiError(error)
     }
   }
@@ -99,10 +120,8 @@ export const useSupabaseService = () => {
   const logout = async () => {
     try {
       const { error } = await supabase.auth.signOut()
-
       return { error }
     } catch (error: unknown) {
-      // Specify error as unknown here
       handlerApiError(error)
     }
   }
