@@ -1,0 +1,5 @@
+export { Banner } from './Banner'
+export { Bottom } from './Bottom'
+export { Features } from './Features'
+export { Pricing } from './Pricing'
+export { Testimonials } from './Testimonials'
