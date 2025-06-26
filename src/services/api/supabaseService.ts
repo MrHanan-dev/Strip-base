@@ -1,13 +1,4 @@
-// supabaseService.ts
-
-import type { PricingPlan, Profile } from '@/interfaces'
-import { handlerApiError } from '@/utils/errors/handlerApi'
-import { supabase } from '@/lib/supabase'
-import type { AuthError } from '@supabase/supabase-js'
-
-// Define the service
 export const useSupabaseService = () => {
-
   // Fetch Pricing Plans function
   const fetchPricingPlans = async ({
     limit = 1000,
@@ -21,6 +12,7 @@ export const useSupabaseService = () => {
         id, name, slug, 
         description, cta, 
         most_popular, is_featured, 
+        price_monthly, price_yearly,
         pricing_features(id, name)
       `.replace(/\s+/g, ' ').trim()
 
@@ -41,13 +33,13 @@ export const useSupabaseService = () => {
       }
 
       // Ensure 'data' is a valid array and contains 'PricingPlan' objects
-      if (!data || !Array.isArray(data)) {
+      if (!Array.isArray(data)) {
         console.error('Data is not in the expected format:', data)
         return [] // Return empty array if 'data' is not an array
       }
 
       // Safely map the data to PricingPlan objects with proper type assertion
-      return (data as unknown as PricingPlan[]).map((plan) => ({
+      return data.map((plan: any) => ({
         id: plan.id ? String(plan.id) : 'Unknown',
         name: plan.name ? String(plan.name) : 'Unknown',
         slug: plan.slug ? String(plan.slug) : 'Unknown',
@@ -55,9 +47,9 @@ export const useSupabaseService = () => {
         cta: plan.cta || 'No CTA available',
         most_popular: plan.most_popular !== undefined ? Boolean(plan.most_popular) : false,
         is_featured: plan.is_featured !== undefined ? Boolean(plan.is_featured) : false,
-        pricing_features: plan.pricing_features || [], // If no pricing features, return an empty array
         price_monthly: plan.price_monthly ? Number(plan.price_monthly) : 0,
-        price_yearly: plan.price_yearly ? Number(plan.price_yearly) : 0
+        price_yearly: plan.price_yearly ? Number(plan.price_yearly) : 0,
+        pricing_features: plan.pricing_features || [], // If no pricing features, return an empty array
       }))
     } catch (error: unknown) {
       handlerApiError(error)
@@ -94,12 +86,10 @@ export const useSupabaseService = () => {
       // Log the fetched user profile for debugging
       console.log("Fetched User Profile:", data);
 
-      // Ensure pricing_plans is an array
       const pricingPlans = Array.isArray(data.pricing_plans)
         ? data.pricing_plans
         : [data.pricing_plans]
 
-      // Profile object
       const profile: Profile = {
         id: String(data.id),
         name: String(data.name),
@@ -110,13 +100,13 @@ export const useSupabaseService = () => {
         is_subscribed: Boolean(data.is_subscribed),
         plan_id: data.plan_id ? String(data.plan_id) : undefined,  // Replace null with undefined
         stripe_customer_id: String(data.stripe_customer_id),
-        pricing_plans: pricingPlans.map((plan: PricingPlan) => ({
+        pricing_plans: pricingPlans.map((plan: any) => ({
           id: String(plan.id),
           name: String(plan.name),
           slug: String(plan.slug),
           description: plan.description || 'No description available',
           price_monthly: plan.price_monthly || 0,
-          price_yearly: plan.price_yearly || 0
+          price_yearly: plan.price_yearly || 0,
         })),
       }
 
