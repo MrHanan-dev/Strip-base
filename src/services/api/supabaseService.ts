@@ -78,7 +78,7 @@ export const useSupabaseService = () => {
       plan_id: data.plan_id,
       stripe_customer_id: data.stripe_customer_id,
       pricing_plans: Array.isArray(data.pricing_plans)
-        ? data.pricing_plans.map((plan: any) => ({
+        ? data.pricing_plans.map((plan: PricingPlan) => ({
             id: plan.id,
             name: plan.name,
             slug: plan.slug,
