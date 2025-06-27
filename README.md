@@ -4,7 +4,7 @@ Welcome to the `Next.js SaaS Starter with Stripe` – your ultimate boilerplate 
 
 ## 🎯 Overview
 
-A powerful SaaS starter-kit built with Next.js, Stripe, Supabase, Typescript, and Tailwind CSS. Perfect for launching your next SaaS project!
+A powerful SaaS starter-kit built with Next.js, Stripe, Supabase, Typescript, and Tailwind CSS. Perfect for launching your next SaaS project
 
 <img width="953" alt="image" src="https://github.com/user-attachments/assets/cfe01246-a067-4d3e-8f20-99f27dac084e" />
 <img width="951" alt="image" src="https://github.com/user-attachments/assets/7e739b2a-3d04-4a24-bd2b-e61b685e0330" />
